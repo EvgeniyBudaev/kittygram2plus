@@ -3,6 +3,8 @@ from rest_framework.throttling import AnonRateThrottle
 from rest_framework import permissions
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.pagination import LimitOffsetPagination
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
 
 from .models import Achievement, Cat, User
 from .serializers import AchievementSerializer, CatSerializer, UserSerializer
@@ -26,7 +28,17 @@ class CatViewSet(viewsets.ModelViewSet):
     # Пагинация
     # pagination_class = PageNumberPagination
     # pagination_class = LimitOffsetPagination
-    pagination_class = CatsPagination
+    pagination_class = None  # временно отключили CatsPagination
+    # Указываем фильтрующий бэкенд DjangoFilterBackend
+    # Из библиотеки django-filter
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter,
+                       filters.OrderingFilter)
+    # Фильтровать будем по полям color и birth_year модели Cat
+    filterset_fields = ('color', 'birth_year', 'achievements__name',
+                        'owner__username')
+    search_fields = ('name',)
+    ordering_fields = ('name', 'birth_year')
+    ordering = ('birth_year',)
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)

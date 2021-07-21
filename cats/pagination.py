@@ -13,7 +13,7 @@ from rest_framework.response import Response
 #                 'previous': self.get_previous_link()
 #             },
 #             'count': self.page.paginator.count,
-#             'results': data
+#             'response': data
 #         })
 
 
@@ -27,7 +27,7 @@ class CatsPagination(LimitOffsetPagination):
                 'previous': self.get_previous_link()
             },
             'count': self.count,
-            'results': data
+            'response': data
         })
 
 #  limit - какое число объектов вернется
